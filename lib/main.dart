@@ -16,10 +16,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Listagem de produtos',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-        useMaterial3: true,
-      ),
+      // theme: ThemeData(
+      //   // colorScheme: ColorScheme.fromSeed(seedColor: Color()),
+      //   useMaterial3: true,
+      // ),
       home: const MyHomePage(title: 'Listagem dos produtos'),
     );
   }
@@ -132,43 +132,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    // Map<String, dynamic> p1 = {"nome": "Maca", "preco": 5.99, "estoque": 2};
     super.initState();
-    // print(produtos);
+    // Map<String, dynamic> p1 = {"nome": "Maca", "preco": 5.99, "estoque": 2};
     getProduto();
-    // print(produtos);
-    // getProduto();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 24,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text(widget.title),
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: produtos.isEmpty
-          ? Center(
-              child: CircularProgressIndicator()) // Indicador de carregamento
-          : ListView.builder(
-              itemCount: produtos.length,
-              itemBuilder: (context, index) {
-                final produto = produtos[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    child: Text(produto.nome[0]), // Inicial do nome
-                  ),
-                  title: Text(produto.nome),
-                  subtitle: Text('Nome: ${produto.nome}\n'),
-                  isThreeLine: true,
-                );
-              },
-            ),
-    );
+        body: produtos.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : ListView.separated(
+                itemBuilder: (context, index) {
+                  final produto = produtos[index];
+                  return ListTile(
+                    title: Text(
+                      produto.nome,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+                padding: EdgeInsets.all(16),
+                separatorBuilder: (_, __) => Divider(),
+                itemCount: produtos.length));
   }
 }
