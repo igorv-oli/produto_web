@@ -13,14 +13,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Listagem de produtos',
-      // theme: ThemeData(
-      //   // colorScheme: ColorScheme.fromSeed(seedColor: Color()),
-      //   useMaterial3: true,
-      // ),
-      home: const MyHomePage(title: 'Listagem dos produtos'),
+      home: MyHomePage(title: 'Listagem dos produtos'),
     );
   }
 }
@@ -50,10 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (response.statusCode == 201) {
         print('Dados enviados com sucesso');
       } else {
-        print('Erro na requisição POST: ${response.statusCode}');
+        throw Exception('Erro na requisição POST: ${response.statusCode}');
       }
     } catch (e) {
-      print('Erro: $e');
+      throw Exception('Erro: $e');
     }
   }
 
@@ -69,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
           produtos =
               data.map((produto) => ProdutoModel.fromJson(produto)).toList();
         });
+        print(data);
       } else {
         throw Exception('Erro na requisição GET: ${response.statusCode}');
       }
@@ -87,10 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
         final data = json.decode(response.body);
         print(data);
       } else {
-        print('Erro na requisição GET: ${response.statusCode}');
+        throw Exception('Erro na requisição GET: ${response.statusCode}');
       }
     } catch (e) {
-      print('Erro: $e');
+      throw Exception('Erro: $e');
     }
   }
 
@@ -107,10 +104,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (response.statusCode == 200) {
         print('Dados atualizados com sucesso');
       } else {
-        print('Erro na requisição PUT: ${response.statusCode}');
+        throw Exception('Erro na requisição PUT: ${response.statusCode}');
       }
     } catch (e) {
-      print('Erro: $e');
+      throw Exception('Erro: $e');
     }
   }
 
@@ -123,24 +120,20 @@ class _MyHomePageState extends State<MyHomePage> {
       if (response.statusCode == 200) {
         print('Dados deletados com sucesso');
       } else {
-        print('Erro na requisição DELETE: ${response.statusCode}');
+        throw Exception('Erro na requisição DELETE: ${response.statusCode}');
       }
     } catch (e) {
-      print('Erro: $e');
+      throw Exception('Erro: $e');
     }
   }
 
   void modalCreate() {}
 
-  void modalEdit() {}
-
-  void modalDelete() {}
-
   @override
   void initState() {
     super.initState();
     // Map<String, dynamic> p1 = {"nome": "Maça", "preco": 5.99, "estoque": 2};
-    // updateProduto(1, p1);
+    // createProduto(p1);
     getProduto();
   }
 
@@ -157,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: produtos.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.separated(
               itemBuilder: (context, index) {
                 final produto = produtos[index];
@@ -172,13 +165,52 @@ class _MyHomePageState extends State<MyHomePage> {
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          modalEdit();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Editar produto'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Fechar'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          modalDelete();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                // title: Text('Deseja realmente deletar o produto?'),
+                                content:
+                                    Text('Deseja realmente deletar o produto?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      deleteProduto(produto.id);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Confirmar'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Cancelar'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                       ),
                     ],
