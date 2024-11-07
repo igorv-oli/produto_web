@@ -130,39 +130,69 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void modalCreate() {}
+
+  void modalEdit() {}
+
+  void modalDelete() {}
+
   @override
   void initState() {
     super.initState();
-    // Map<String, dynamic> p1 = {"nome": "Maca", "preco": 5.99, "estoque": 2};
+    // Map<String, dynamic> p1 = {"nome": "Maça", "preco": 5.99, "estoque": 2};
+    // updateProduto(1, p1);
     getProduto();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text(widget.title),
-          titleTextStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-          ),
-          centerTitle: true,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text(widget.title),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 24,
         ),
-        body: produtos.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : ListView.separated(
-                itemBuilder: (context, index) {
-                  final produto = produtos[index];
-                  return ListTile(
-                    title: Text(
-                      produto.nome,
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                },
-                padding: EdgeInsets.all(16),
-                separatorBuilder: (_, __) => Divider(),
-                itemCount: produtos.length));
+        centerTitle: true,
+      ),
+      body: produtos.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.separated(
+              itemBuilder: (context, index) {
+                final produto = produtos[index];
+                return ListTile(
+                  title: Text(
+                    produto.nome,
+                    textAlign: TextAlign.center,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          modalEdit();
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          modalDelete();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+              padding: EdgeInsets.all(16),
+              separatorBuilder: (_, __) => Divider(),
+              itemCount: produtos.length),
+      floatingActionButton: FloatingActionButton(
+        onPressed: modalCreate,
+        tooltip: 'Adicionar Produto',
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
